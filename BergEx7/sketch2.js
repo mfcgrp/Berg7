@@ -8,7 +8,7 @@ let berg;
 let bergUV;
 
 
-//timer used to change textures, speed and scales
+//timer used to change textures, speed and zscales
 let timer = 6600;
 let nextChange = timer;
 
@@ -20,6 +20,9 @@ let url = "DataTest8.csv";
 
 var texturesArray = [];
 
+const timer1 = ms => new Promise(res => setTimeout(res, ms))
+
+
 
 function preload() {
 berg = loadModel("iceberg15.obj", true);
@@ -27,7 +30,7 @@ table = loadTable(url,"csv","header");
 
 //preload for array to texture obj 
 for (var i=0; i<74; i++)  {
-  texturesArray[i] = loadImage("DataImg/Data"+i+".png");
+  texturesArray.push( loadImage(`./DataImg/Data${i}.png`) );
 }
 
 //load background texture on sphere, good as is
@@ -39,8 +42,8 @@ for (var i=0; i<74; i++)  {
 
 function setup() {
   createCanvas(770, 700, WEBGL);
-  setAttributes("antialias", true)
-  textureWrap(REPEAT)
+  //setAttributes("antialias", true)
+  //textureWrap(REPEAT)
 
 }
 
@@ -170,9 +173,21 @@ if (millis() > timer * 45) {
 }
 
 //for loop to texture obj from arrary
-for(var i=0; i<74; i++) {
+/* for(var i=0; i<74; i++) {
   texture(texturesArray[i]);
+  console.log( texturesArray[i] )
 }
+ */
+
+
+async function loadTextures () { // We need to wrap the loop into an async function for this to work
+  for (var i = 0; i < texturesArray.length; i++) {
+    texture(texturesArray[i]);
+    console.log (i);
+    await timer1(6000); // then the created Promise can be awaited
+  }
+}
+loadTextures();
 
   model(berg);
 
@@ -182,7 +197,7 @@ for(var i=0; i<74; i++) {
   translate(0, 0, 0);
   sphere(750);
 
-
+ /*  texture(texturesArray[7]); */
 
 
 
